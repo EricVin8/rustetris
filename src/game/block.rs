@@ -7,16 +7,9 @@ pub struct Blocks {
 }
 impl Blocks {
 
-    fn derotate(&mut self) {
-        let mut temparr = vec![vec![' '; self.shape.len()]; self.shape.len()];
-        for i in 0..self.shape.len() {
-            for j in (0..self.shape.len()).rev() {
-                temparr[self.shape.len()-(j+1)][i] = self.shape[i][j];
-            }
-        }
-    }
     pub fn rotate(&mut self, win: &Window) {
         //problem, properly elim old shape if goign to rotate, also why is it sometimes spawning in new blocks? 
+        //maybe i should have it rotate the way tetris blocks normally rotate...
         let mut temparr = vec![vec![' '; self.shape.len()]; self.shape.len()];
         for i in 0..self.shape.len() {
             for j in 0..self.shape.len() {
@@ -29,23 +22,26 @@ impl Blocks {
         }
         for i in 0..self.shape.len() {
          for j in 0..self.shape.len() {
-            temparr[self.shape.len()-(j+1)][i] = self.shape[i][j];
+            temparr[j][self.shape.len()-(i+1)] = self.shape[i][j];
          }
         }
+        let mut swapsuccess = true;
+        for i in 0..self.shape.len() {
+            for j in 0..self.shape.len() {
+                if temparr[i][j] == '#' && win.mvinch(self.lefty + i as i32, self.leftx + j as i32 ) == 35 {
+                    swapsuccess = false;
+                }
+            }
+        }
+        if swapsuccess {
         for i in 0..self.shape.len() {
             for j in 0..self.shape.len() {
                 self.shape[i][j] = temparr[i][j];
             }
         }
-        if !self.check_futurecoords(self.leftx, self.lefty, win) {
-            self.derotate();
-            self.move_tocoords(self.leftx, self.lefty, win);
-
-        }
-        else {
-            self.move_tocoords(self.leftx, self.lefty, win);
-            win.refresh();
-        }
+    }
+        self.move_tocoords(self.leftx, self.lefty, win);
+    
      }
     fn move_tocoords(&mut self, newx: i32, newy: i32, win: &Window) {
         //remove old section from screen, dont forget to window.refresh() after this move!!!

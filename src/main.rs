@@ -4,15 +4,15 @@ use rand::Rng;
 
 use pancurses::{initscr, endwin, noecho, curs_set};
 mod game;
-
-fn printvector(vec: & Vec<Vec<char>>) {
+//let boardsize = 10;
+/*fn printvector(vec: & Vec<Vec<char>>) {
     for i in 0..vec.len() {
         for j in 0..vec.len() {
         print!("{}", vec[i][j]);
         }
-        println!("");
+        print!("\n");
        }
-}
+} */
 
 
 fn main() { 
@@ -38,6 +38,7 @@ fn main() {
        //note: switch to fastrng soon
          
         game::blockloop(&mut game::genblockonscreen(shapes[rand::thread_rng().gen_range(0..shapes.len())].clone(), &window), &window);
+        //clear line here
     }
     
     endwin();

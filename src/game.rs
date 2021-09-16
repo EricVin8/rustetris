@@ -19,6 +19,9 @@ pub fn genblockonscreen(vec: Vec<Vec<char>>, win: &Window) -> block::Blocks {
     //todo implement initial drawing on screen
     
 }
+pub fn clearline(window : & Window) {
+    
+}
 
 pub fn blockloop(block : &mut block::Blocks, window : & Window) {
     //is this needed or should this be in main????
@@ -29,7 +32,7 @@ pub fn blockloop(block : &mut block::Blocks, window : & Window) {
     while onblock {
         let newtime = Instant::now();
         let j = newtime.duration_since(starttime);
-        if j.as_millis() > 400 {
+        if j.as_millis() > 200 {
             onblock = block.move_down(window);
             starttime = Instant::now();
         }
