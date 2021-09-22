@@ -3,6 +3,10 @@ use pancurses::{Window};
 pub struct Blocks {
     pub leftx: i32,
     pub lefty: i32,
+    pub minx: i32,
+    pub maxx: i32,
+    pub miny: i32,
+    pub maxy: i32,
     pub shape:  Vec<Vec<char>>,
 }
 impl Blocks {
@@ -28,7 +32,7 @@ impl Blocks {
         let mut swapsuccess = true;
         for i in 0..self.shape.len() {
             for j in 0..self.shape.len() {
-                if temparr[i][j] == '#' && win.mvinch(self.lefty + i as i32, self.leftx + j as i32 ) == 35 {
+                if temparr[i][j] == '#' && win.mvinch(self.lefty + i as i32, self.leftx + j as i32 ) == 35 || self.lefty + (i as i32) > self.maxy || self.leftx + (j as i32) > self.maxx || self.leftx + (j as i32) < self.minx {
                     swapsuccess = false;
                 }
             }
@@ -69,12 +73,11 @@ impl Blocks {
     }
     fn check_futurecoords(&mut self, newx: i32, newy: i32, win: &Window) -> bool {
         let mut success = true;
-
         //todo use left coord as base, then run foor loop, and check at each position where char in base == '#' if there is one exisiting. On the last i where i == shapes.len(), check bottom for hashtag or ground, and if hashtag create new block, and if ground move then create new block, will return false if block is in solid state
         for i in 0..self.shape.len() {
             for j in 0.. self.shape.len() {
                 //not sure why a -1 is needed here, but it needs it to work
-                if self.shape[i][j] == '#' && newy + i as i32 > win.get_max_y() -1 {
+                if self.shape[i][j] == '#' && (newy + i as i32 > self.maxy || newx + j as i32 > self.maxx || (newx + j as i32) < self.minx){
                      success = false;
                 }
                 if self.shape[i][j] == '#' && win.mvinch(newy + i as i32, newx + j as i32 ) == 35 {

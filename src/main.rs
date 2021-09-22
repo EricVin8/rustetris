@@ -4,7 +4,8 @@ use rand::Rng;
 
 use pancurses::{initscr, endwin, noecho, curs_set};
 mod game;
-//let boardsize = 10;
+static BOARDWIDTH: usize = 10;
+static BOARDHEIGHT: usize = 20;
 /*fn printvector(vec: & Vec<Vec<char>>) {
     for i in 0..vec.len() {
         for j in 0..vec.len() {
@@ -22,6 +23,7 @@ fn main() {
     let leftl = vec![vec!['#', '#', ' '], vec![' ', '#', ' '], vec![' ', '#', ' ']];
     let rightslant = vec![vec![' ', ' ', '#'], vec![' ', '#', '#'], vec![' ', '#', ' ']];
     let leftslant = vec![vec!['#', ' ', ' '], vec!['#', '#', ' '], vec![' ', '#', ' ']];
+    //let amogus = vec![vec!['#', '#', '#', ' '], vec!['#', ' ', '#', '#'], vec!['#', '#', '#', '#'], vec!['#', ' ', '#', ' ']];
     let longblock = vec![vec![' ', ' ', ' ', ' '], vec!['#', '#', '#', '#'], vec![' ', ' ', ' ', ' '], vec![' ', ' ', ' ', ' ']];
     let shapes = [plusblock, square, rightl, leftl, rightslant, leftslant, longblock];
 
@@ -33,11 +35,13 @@ fn main() {
     window.nodelay(true);
     curs_set(0);
     noecho();
+    game::drawborder(BOARDWIDTH.clone(), BOARDHEIGHT.clone(), &window);
     loop { 
         
        //note: switch to fastrng soon
-         
-        game::blockloop(&mut game::genblockonscreen(shapes[rand::thread_rng().gen_range(0..shapes.len())].clone(), &window), &window);
+        let mut block = game::genblockonscreen(shapes[rand::thread_rng().gen_range(0..shapes.len())].clone(), &window, BOARDWIDTH.clone(), BOARDHEIGHT.clone()); 
+        game::blockloop(&mut block, &window);
+        game::clearline(block, &window);
         //clear line here
     }
     
