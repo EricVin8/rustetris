@@ -35,37 +35,58 @@ pub fn drawborder(boardwidth: usize, boardheight: usize, win: &Window) {
         win.mvaddch(miny + i as i32, minx -1, '|');
         win.mvaddch(miny + i as i32, maxx+1, '|');
     }
+    win.mvaddstr(2, win.get_max_x() - 12, "Score:");
+    let tempscore = 0;
+    updatescore(&win, &tempscore);
     win.refresh();
 }
-pub fn clearline(block: block::Blocks, window : & Window) {
+pub fn updatescore(window: &Window, score: &i32) {
+    let stringscore = score.to_string();
+    window.mvaddstr(2, window.get_max_x() - stringscore.len() as i32 - 1, stringscore);
+    window.refresh();
+}
+
+pub fn clearline(block: block::Blocks, window : & Window, score: &mut i32) -> bool {
     //todo on block end, read screen into array, then run check on array
 //if line is completed, then remove, add array of ' ' to top, then update every y value below/above the removed line 
-let mut board = [[' '; 10]; 20];
+let mut board = [[0u64; 10]; 20];
+let mut consecutivecounter = 0;
 let mut fulline = false;
 let mut changed = false;
 for i in block.miny..block.maxy+1 {
     fulline = true;
     for j in block.minx..block.maxx+1 {
-        if window.mvinch(i, j) == 32 {
+        if (window.mvinch(i, j) & 0x7F) == 32 {
             fulline = false;
-            changed = true;
         }
-        board[(i-block.miny) as usize][(j - block.minx) as usize] = window.mvinch(i, j) as u8 as char;
+        board[(i-block.miny) as usize][(j - block.minx) as usize] = window.mvinch(i, j) as u64;
     }
     if fulline {
+        changed = true;
+            //subtract original score, than add new one
+        consecutivecounter += 1;
         for k in (1..(i - block.miny + 1)).rev() {
             board[k as usize] = board[k as usize-1];
         }
     }
+
+}
+match consecutivecounter {
+    1 => {*score += 40;},
+    2 => {*score += 100;},
+    3 => {*score += 300;},
+    4 => {*score += 1200;},
+    _ => (),
 }
 if changed {
 for i in block.miny..block.maxy + 1 {
     for j in block.minx..block.maxx+1 {
-        window.mvaddch(i, j, board[(i-block.miny) as usize][(j - block.minx) as usize]);
+        window.mvaddch(i, j, board[(i-block.miny) as usize][(j - block.minx) as usize] as u32);
     }
 }
 }
 window.refresh();
+changed
 }
 
 pub fn blockloop(block : &mut block::Blocks, window : & Window) {

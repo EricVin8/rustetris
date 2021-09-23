@@ -32,7 +32,7 @@ impl Blocks {
         let mut swapsuccess = true;
         for i in 0..self.shape.len() {
             for j in 0..self.shape.len() {
-                if temparr[i][j] == '#' && win.mvinch(self.lefty + i as i32, self.leftx + j as i32 ) == 35 || self.lefty + (i as i32) > self.maxy || self.leftx + (j as i32) > self.maxx || self.leftx + (j as i32) < self.minx {
+                if temparr[i][j] == '#' && (win.mvinch(self.lefty + i as i32, self.leftx + j as i32 ) & 0x7F) == 35 || self.lefty + (i as i32) > self.maxy || self.leftx + (j as i32) > self.maxx || self.leftx + (j as i32) < self.minx {
                     swapsuccess = false;
                 }
             }
@@ -80,7 +80,7 @@ impl Blocks {
                 if self.shape[i][j] == '#' && (newy + i as i32 > self.maxy || newx + j as i32 > self.maxx || (newx + j as i32) < self.minx){
                      success = false;
                 }
-                if self.shape[i][j] == '#' && win.mvinch(newy + i as i32, newx + j as i32 ) == 35 {
+                if self.shape[i][j] == '#' && ((win.mvinch(newy + i as i32, newx + j as i32 )) & 0x7F) == 35 {
                     //problem found, checks collision of old and new of same shape, add new if checks for solution!
                     //The big checc here, checks if that piece found is a part of the current shape or an already placed block
                     //eprintln!("the values inputted are: j {} and i {} ", j  + (newx - self.leftx) as usize, i + (newy - self.lefty) as usize );
