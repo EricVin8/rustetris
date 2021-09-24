@@ -3,7 +3,7 @@ use std::time::{Instant};
 use std::char;
 mod block;
 
-pub fn genblockonscreen(vec: Vec<Vec<char>>, win: &Window, boardwidth: usize, boardheight: usize) -> block::Blocks {
+pub fn genblockonscreen(vec: Vec<Vec<char>>, win: &Window, boardwidth: usize, boardheight: usize, index: usize) -> block::Blocks {
     let x = win.get_max_x() / 2;
     let y = win.get_max_y() / 2;
 
@@ -16,7 +16,7 @@ pub fn genblockonscreen(vec: Vec<Vec<char>>, win: &Window, boardwidth: usize, bo
         }
     }
     win.refresh();
-    block::Blocks{ leftx: x, lefty: spawny, minx: x - (boardwidth as i32/2) + 1, maxx: x + (boardwidth as i32/2), miny: spawny, maxy: y + (boardheight as i32)/2, shape: vec,}
+    block::Blocks{ leftx: x, lefty: spawny, minx: x - (boardwidth as i32/2) + 1, maxx: x + (boardwidth as i32/2), miny: spawny, maxy: y + (boardheight as i32)/2, index: index as i32 + 1, shape: vec,}
     //todo implement initial drawing on screen
     
 }

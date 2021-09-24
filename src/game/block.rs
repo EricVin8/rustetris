@@ -1,4 +1,4 @@
-use pancurses::{Window};
+use pancurses::{Window, COLOR_PAIR};
 
 pub struct Blocks {
     pub leftx: i32,
@@ -7,6 +7,7 @@ pub struct Blocks {
     pub maxx: i32,
     pub miny: i32,
     pub maxy: i32,
+    pub index: i32,
     pub shape:  Vec<Vec<char>>,
 }
 impl Blocks {
@@ -15,6 +16,7 @@ impl Blocks {
         //problem, properly elim old shape if goign to rotate, also why is it sometimes spawning in new blocks? 
         //maybe i should have it rotate the way tetris blocks normally rotate...
         let mut temparr = vec![vec![' '; self.shape.len()]; self.shape.len()];
+        win.attroff(COLOR_PAIR(self.index as u32));
         for i in 0..self.shape.len() {
             for j in 0..self.shape.len() {
                 if self.shape[i][j] == '#' {
@@ -24,6 +26,8 @@ impl Blocks {
                 
             }
         }
+        win.attron(COLOR_PAIR(self.index as u32));
+
         for i in 0..self.shape.len() {
          for j in 0..self.shape.len() {
             temparr[j][self.shape.len()-(i+1)] = self.shape[i][j];
@@ -49,6 +53,7 @@ impl Blocks {
      }
     fn move_tocoords(&mut self, newx: i32, newy: i32, win: &Window) {
         //remove old section from screen, dont forget to window.refresh() after this move!!!
+        win.attroff(COLOR_PAIR(self.index as u32));
         for i in 0..self.shape.len() {
             for j in 0..self.shape.len() {
                 if self.shape[i][j] == '#' {
@@ -58,6 +63,7 @@ impl Blocks {
                 
             }
         }
+        win.attron(COLOR_PAIR(self.index as u32));
         for i in 0..self.shape.len() {
             for j in 0..self.shape.len() {
                 if self.shape[i][j] == '#' {

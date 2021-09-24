@@ -44,19 +44,20 @@ fn main() {
     init_color(COLOR_RED, 1000, 0, 0);
     init_color(COLOR_GREEN, 0, 1000, 0);
     init_color(COLOR_CYAN, 0, 1000, 1000);
-    init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(3, COLOR_BLUE, COLOR_BLACK);
-    init_pair(4, 8, COLOR_BLACK);
-    init_pair(5, COLOR_RED, COLOR_BLACK);
-    init_pair(6, COLOR_GREEN, COLOR_BLACK);
-    init_pair(7, COLOR_CYAN, COLOR_BLACK);
+    init_pair(1, COLOR_MAGENTA, COLOR_MAGENTA);
+    init_pair(2, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(3, COLOR_BLUE, COLOR_BLUE);
+    init_pair(4, 8, 8);
+    init_pair(5, COLOR_RED, COLOR_RED);
+    init_pair(6, COLOR_GREEN, COLOR_GREEN);
+    init_pair(7, COLOR_CYAN, COLOR_CYAN);
+    init_pair(8, COLOR_BLACK, COLOR_BLACK);
     loop { 
         //note, colors will break if new block is added
        //note: switch to fastrng soon
         let randomblock = rand::thread_rng().gen_range(0..shapes.len());
         window.attron(COLOR_PAIR(randomblock as u32 + 1));
-        let mut block = game::genblockonscreen(shapes[randomblock].clone(), &window, BOARDWIDTH.clone(), BOARDHEIGHT.clone()); 
+        let mut block = game::genblockonscreen(shapes[randomblock].clone(), &window, BOARDWIDTH.clone(), BOARDHEIGHT.clone(), randomblock); 
         game::blockloop(&mut block, &window);
         window.attroff(COLOR_PAIR(randomblock as u32 + 1));
         if game::clearline(block, &window, &mut score) {
